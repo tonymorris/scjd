@@ -1,0 +1,301 @@
+1. Introduction
+---------------
+This document will provide a detailed outline of the decisions made during development
+of the application as per the requirements of the Sun Certified Developer for the Java 2 Platform
+assignment (Application Submission 2.1.2). The document is broken up into the following five sections;
+this "Introduction", "Assumptions", "Limitations", "Design Patterns, Strategies and Decisions" and
+"Possible Future Enhancements".
+
+2. Assumptions
+--------------
+2.1 The existence of the data file
+It was assumed that there was always a presence of a data file that contained valid header data on the server.
+The location of this data file can be configured through the client application.
+No mechanism has been provided to create a data file, however, the appropriate API has been implemented
+and tested should a future request be made for this functionality.
+
+2.2 Unlocking of deleted data records
+It was assumed that a deleted record is not considered to be marked as deleted until the record is
+updated in the data file and the exclusive write lock for that record has been released.
+This assumption was made because of the following requirement:
+"Any methods that throw RecordNotFoundException should do so if a specified record does not exist or
+is marked as deleted in the database file".
+A record that is to be deleted must have the exclusive write lock acquired first, the record deleted
+and the write lock released, however, the unlock method throws RecordNotFoundException and so must
+conform to this requirement.
+
+2.3 Data file records terminated by null
+It was assumed that data records were, in fact, not null (ASCII 0x0000) terminated but padded with
+white space (ASCII 0x0020) until the end of the record data. This assumption was made because there was
+a contradiction between the requirements specification and the provided data file. Specifically,
+the data file contained sample data that was "white space padded", while the requirements
+had the following clause:
+"All numeric values are stored in the header information use the formats of the DataInputStream
+and DataOutputStream classes. All text values, and all fields (which are text only), contain only
+8 bit characters, null terminated if less than the maximum length for the field.
+The character encoding is 8 bit US ASCII."
+The assumption is made due to the fact that client requirements are often imprecise and that the data file
+must be a better indicator of the real system.
+
+2.4 suncertify.db.DB remains unmodified
+The DB source file does not contain any javadoc, which is a violation of the requirement that
+"Awkward or complex code should have descriptive comments, and javadoc style comments must be used for each
+element of the public interface of each class." It was assumed that this requirement only applied to source
+files that were authored by myself.
+
+2.5 Spelling
+US English spelling has been used in documentation. This has been done to be consistent with the existing
+core Java API documentation.
+
+2.6 Data Schema Key
+It was assumed that the data schema is made up of a composite unique key using the two fields, "name" and
+"location". This assumption was made because some methods of the suncertify.db.DB interface have been
+declared to throw DuplicateKeyException (and so the data schema must contain a key) and the name and location
+are good candidates for a unique key by definition. The provided sample data also conformed to
+this assumption.
+
+2.7 Search criteria definition requirement possible ambiguity.
+It is a requirement that the user is able to perform a search on the data such that the given criteria must
+match exactly (as opposed to the server implementation where a field matches if it starts with the given criteria).
+"It must allow the user to search the data for all records, or for records where the name and/or location fields
+exactly match values specified by the user. "
+
+It was assumed that search criteria that was not specified would be ignored when evaluating the entire data record
+to determine if it matched the given criteria. For example, a data record that contained the name "Foo" and the location
+"Bar", the search criteria ["Foo", <not specified - empty string>] would match because the second argument is ignored
+in the evaluation.
+
+2.8 Inclusion of JUnit test cases
+The JUnit test case source files and related documentation were included with the submission in order
+to conform to the following requirement:
+"A directory called code, containing all the source code and related parts of your project..."
+The JUnit test cases are assumed to be "related parts of my project".
+
+2.9 Clarity and Maintainability
+The requirements make reference to the fact that the design should maintain clarity and be "readily understood by
+junior programmers". The requirements also suggest the preference of a "clear design" over a "complex one".
+These terms are vague and immeasurable. It is assumed that the reference to clarity and maintainability is the
+splitting of responsbilities between classes (source files) so that each class serves one particular purpose.
+For example, the suncertify.db.server.RecordLockManager interface is specifically for managing record locks.
+It is also assumed the a "complex design" is not directly proportionaly to the number of classes/interface.
+The application has been designed to have a loose coupling between software components. This enhances clarity
+and maintainability and also provides the ability to easily examine and understand the design of the software.
+As a result, the application is composed of approximately 70 source files. This is assumed to be a "reasonable
+number of classes and interfaces".
+
+2.10 A separate user interface for the client and server
+The requirements make reference to "the GUI" which has an implication that the application should only have
+one GUI. There is also reference to "a GUI" which has an implication that there might be another GUI which is
+distinct from "the GUI". After some analysis of the purpose of the GUI application(s), it was assumed that
+there was to be two Graphical User Interfaces; one for the server, and one for the client. The server GUI
+enables configuration of the server side properties. It was considered bad practice to allow the client GUI
+to configure the server.
+
+2.11 Client interface functionality
+The client interface provides minimal additional functionality above the requirements. It was assumed that this
+functionality should be provided in order to allow the application to serve a purpose. The requirements made
+reference to the problem domain and the intended use, but did not offer a complete description of required
+functionality. Functionality of the client interface includes:
+- Cut, Copy & Paste
+- Edit a data record
+- Delete a data record
+- Create a new data record
+- Search data records on any field(s)
+- Refresh the data record display
+
+3. Limitations
+--------------
+3.1 Exception handling limitation using the provided DB interface
+Several of the methods of the DB interface were not marked to throw a checked exception that might occur
+during processing of that methods contents. This limitation was handled by rethrowing a non-checked
+exception that contained the checked exception's message. In most cases, this exception was of type
+java.lang.IllegalStateException. An alternative is to log an error on the server and return
+a value to the client that indicated a server error (e.g. return null from the find(String) method).
+It was decided that the non-checked exception approach was more descriptive by way of an exception name
+(that indicated to the client that the remote Data object was in an illegal state) and a detailed message.
+
+Java Language Specification (Second Edition) 8.4.4
+http://java.sun.com/docs/books/jls/second_edition/html/classes.doc.html#78323
+"A method that overrides or hides another method (§8.4.6), including methods that implement abstract
+methods defined in interfaces, may not be declared to throw more checked exceptions than the overridden
+or hidden method."
+
+3.2 Updating record data ignores the schema key values
+The update(int, String[], long) method of the suncertify.db.DB interface is not declared to throw
+DuplicateKeyException. It was assumed that an attempt made to update data in records would not affect
+the key value(s) and so there was no chance of a duplicate key collision occurring. The passed data
+in the key fields would be ignored.
+
+3.3 Extension of the DB interface to provide a dynamic data schema
+Several extensions are possible to the suncertify.db.DB interface. No extensions were made to this interface
+(such as directly inheriting from it) in order to keep the submission within the scope of the requirements.
+This brought about the limitation of where to provide the data schema to the client. The data schema is
+defined in the data file on the server and typically, the client would be able to query the server for
+the data schema, therefore, keeping the schema on the server and allowing schema updates without affecting
+the client (requiring an upgrade for example). The eventual solution was that the schema be defined in
+the server data file and also the client configuring itself with the data schema. This configuration must
+match the schema on the server otherwise, behavior of the client is indeterminate. This would allow schema
+updates on the server, and the client would simply have to reconfigure without recompilation, upgrading, etc.
+
+3.4 Search criteria requirement redundant
+Using a null value for a search to always match a field is redundant with passing an empty string to
+match a field (as all field values start with an empty string). The null value to search could have been
+used for some other function.
+
+Requirement excerpt:
+"A null value in criteria[n] matches any field value. A non-null  value in criteria[n] matches any field
+value that begins with criteria[n]."
+
+3.5 Exception messages
+When an exception occurs, the user sees both the exception type and the exception message. It is then
+the responsibility of the exception implementation to provide a detailed message to the user in order to resolve
+the issue. Some of the core exceptions have limited detail in the exception message, and as a result, some
+exception messages may be cryptic.
+The exception implementation is the sole provider of the exception message because it is considered to be its
+responsiblity as opposed to being the responsibility of the applciation itself.
+
+4. Design Patterns, Strategies and Decisions
+--------------------------------------------
+4.1 System components
+The overall system can be broken into several components that have dependencies in a hierarchical
+fashion. Each separate component of the system has been designed such that they function
+independently of each other and that they perform a single function. This aids is problem resolution
+(as a problem with a component is more likely to be confined to one place) and code maintenance
+becomes easier as updates to a component are less likely to propagate errors throughout the entire
+system. Updates are also made easier with the presence of robust unit test cases to assert that
+the system behaves in a specific way. Changes to the system should not fail any unit tests.
+Unit test cases have been written using the JUnit 3.8.1 automated unit testing framework.
+
+The most prevalent candidate for an independant system component was an API wrapping the intricacies
+of the data file format. Rather than manipulating the data file directly, an API was written
+such that the client code (which was intended to be the server component) could manipulate objects
+rather than data structures that represent the data file format. JUnit test cases were written to
+assert that the data file conformed to the given requirement specification via the API. Other
+software components include the server and the client. Each of the components has been broken down
+into subcomponents using as little coupling as possible while also providing a concrete implementation
+of the system. Top level software components have been separated into packages.
+
+4.2 RMI or Object Serialization
+The requirement stipulated the use of RMI or object serialization for the data access network functionality.
+The decision to use RMI was based on a number of reasons. The two most prominent reasons are:
+- The requirement to implement "local-mode" in the client was made much easier as it fits in well with
+the design intention of RMI - that is, to make method calls appear to be local, even though they are
+going over a network. The local-mode simply uses "actual" local method calls.
+- The use of object serialization would have required the design of a custom protocol. This would
+present scalability issues should the application require future enhancements (and the requirement
+stipulated that this is possible).
+
+4.3 DuplicateKeyException and RecordNotFoundException
+A decision had to be made to determine how these exceptions would be implemented. It was decided that both
+of these exception classes would be checked exceptions and would directly inherit from java.lang.Exception.
+Checked exceptions are generally used for recoverable conditions as opposed to non-checked exceptions which
+usually indicate a programming error or some unforeseen error. Data that contains a duplicate key or
+submitting an invalid record number to the server are both recoverable errors.
+
+4.4 Data record locking
+Clients are able to concurrently acquire an exclusive write lock for distinct records in the data file. An
+exclusive write lock for a given record may be acquired by only one client at a time. The record locking
+implementation has been designed to have a loose coupling to the other functionality provided by the system.
+The implementation is provided by the suncertify.db.RecordLockManager interface and its implementing class.
+The system uses the Factory Design Pattern to create instances of the RecordLockManager implementation and,
+should a new implementation be required in the future, a new factory can be "plugged in" to the system without
+affecting overall functionality. The RecordLockManager maintains an internal java.util.Map reference to a
+java.util.HashMap instance that contains a suncertify.db.server.Lock object for each data record that is
+currently locked. The data record index is used as the key to the Lock instances in the Map. A HashMap was
+used because it was never to contain duplicate keys and insertion, deletion and search performance is of
+higher priority than maintaining insertion order and the number of record locks to be maintained was not
+known at compile time (and so an array would not suffice). Clients are able to concurrently gain read access
+to distinct records. The record lock manager is only concerned with write access to data records.
+
+4.5 Cookie value generation
+The cookie generation implementation is provided with loose coupling to the system because the requirements
+did not stipulate any specific functionality to be performed by the implementation. The Factory Design Pattern
+is used to instantiate objects of type suncertify.db.CookieGeneratorImpl (and returning an interface reference type).
+This loose coupling allows the ability of future changes to the system without the risk of propagating
+errors to other parts of the system. The current implementation provides a minimal amount of obfuscation
+of a mapping between the locked record number and the record lock cookie. Should a new implementation be
+required, it is relatively simple (with a new factory) and unlikely to cause an instability of the system.
+JUnit test cases have been written to assert the required behavior of the cookie value generation.
+
+4.6 Networked and Non-networked Mode
+The issue of having the same public interface provided by the server to the client in both networked and local
+mode was solved by using the Adapter Design Pattern. The class suncertify.db.Data provides the required
+implementation (of the DB interface) in local mode while the suncertify.db.server.RemoteDB interface
+provides the same functionality, however, its public interface is intended to be used over RMI. This
+design pattern assists in code maintenance, scalability and is less error prone. The functionality
+is provided in one place (the Data class) and the "remote wrapper" class (RemoteData) proxies method
+calls to an underlying Data instance. If there is a problem with the functionality of the system, it is
+likely that the problem can be isolated to the Data class, as this class is the sole provider of the
+system's public interface functionality. Once the problem is fixed in this class, no other changes are
+required (as code duplication has been prevented).
+
+4.7 suncertify.db.datafile.DataFile can have data records iterated over.
+The DataFile class uses the Iterator Design Pattern by implementing the suncertify.db.datafile.RecordIterator
+interface. The Iterator Design Pattern provides a way of accessing the data records of a data file
+sequentially without exposing the underlying implementation of accessing data records. If a future
+requirement was to have data records accessed by some other underlying mechanism, the iterator client
+code will not be affected by the change.
+
+4.8 Client uses javax.swing.Action instances.
+The client implements actions by using the Command Design Pattern. This allows for consistency within the
+application about certain attributes of the actions that can be performed from the client application.
+Example action attributes are, the icon, the text associated with the action and the action accelerator key.
+The Action instances have been used on the client application menu bar, the tool bar and also the
+"right-click" popup menu. Changes to the Action's attributes are evident in all places that the action is
+used. The Action source code is isolated to one place and as a result, code maintenance is improved.
+The use of the Command Design Pattern will enable the addition/removal of features in the future.
+
+4.9 The hashCode and equals methods have been written according to a certain specification.
+The hashCode and equals method of certain classes have been written according to the recommendation
+provided by the text,
+"Bloch, Joshua, Addison-Wesley 2001. Effective Java Programming Language Guide."
+All classes that override the Object.hashCode() method also override the Object.equals(Object) method.
+The equals method ensures that it is reflexive, symmetric, transitive and consistent.
+The hashCode method ensures that there is little chance of a hash code collision on two object instances
+that have a different internal state. This strategy ensures the most efficient use of data structures
+(usually structures from the Java Collections API) that use these methods.
+
+4.10 Use Object.notify() and not Object.notifyAll()
+The system was designed such that a notification to a client thread that was waiting to acquire the
+exclusive write lock for a data record would only need to occur on one waiting thread, and not all waiting
+threads. Specifically, the system was designed such that a call to notify() would be sufficient and not a call
+to notifyAll(). This design decision was made in order to conform to the requirement specification,
+"If the specified record is already locked by a different client, the current thread gives up the CPU
+and consumes no CPU cycles until the record is unlocked."
+A call to notifyAll() may cause one or more waiting threads to use CPU to attempt to unsuccessfully acquire
+the lock and so this requirement would be violated. A call to notify() causes just one thread to be notified
+and the system has been designed such that the client thread is guaranteed to acquire the exclusive write
+lock for the data record once it has been notified.
+
+5. Possible Future Enhancements
+-------------------------------
+
+5.1 Networked and Local mode without restarting the client application.
+Under the current system implementation, the client application can be started in either networked or
+local mode by using a command line switch (as per the requirement specification). A typical solution would
+allow the user to connect in either mode without having to restart the application.
+
+5.2 Lock time out
+The server currently exposes the ability to acquire a data record write lock and not release it. Although
+it is highly unlikely that the user of the client application would drop the server connection in between
+acquiring and releasing the lock, it is still possible and the consequences are non-trivial. A typical
+implementation would have a time out on data record write locks such that if they aren't used after
+a specified time period, the lock is released automatically by the system. This would be
+implemented using a low priority background thread. This functionality was not implemented in order to
+keep the submission within the scope of the requirements.
+
+5.3 Data file purge
+The data file is always either growing or remaining constant size. It never shrinks, even after data records
+are deleted (as deletion occurs by setting a flag within the data itself). A typical system would purge the
+data file at intervals and delete any data records that have been flagged as deleted. This would typically
+be implemented by using a low priority background thread that acquires an exclusive lock on the entire system
+before rewriting the data file. This functionality was not implemented in order to keep the submission
+within the scope of the requirements.
+
+5.4 Dynamic data schema
+A typical system would have the data schema defined in one place. In the case of this application, the schema
+location would be in the data file header. Currently the data schema is defined in the data file header
+and also in the client configuration. The two schema definitions must match for the system to function
+correctly. A future modification may allow for the client to query the server for the data schema which
+places no responsibility on the client to define the data schema. This functionality was not implemented in
+order to keep the submission within the scope of the requirements.

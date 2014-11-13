@@ -1,0 +1,78 @@
+<html>
+<head>
+<title>Sun Certified Developer for the Java 2 Platform written by Tony Morris 2003</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="userguide.css" type="text/css">
+</head>
+
+<body bgcolor="#FFFFFF" text="#000000">
+<p class="topictitle">Troubleshooting</p>
+<p class="topictext"><u>Problem:</u><br>
+  The client application is throwing a java.lang.IllegalStateException.</p>
+<p class="topictext"><u>Solution:</u><br>
+  This problem is the result of the data server being in an invalid state. Ensure 
+  that the data server is using a valid data file that contains valid header data.</p>
+<p class="topictext"><u>Problem:</u><br>
+  The server application is reporting the following exception: &quot;java.io.FileNotFoundException: 
+  Data source file name not specified&quot; </p>
+<p class="topictext"><u>Solution:</u><br>
+  The server application is not configured with a data file. Use the server dialog 
+  application to write a configuration file to configure the location of the server 
+  data file.</p>
+<p class="topictext"><u>Problem:</u><br>
+  The server application is reporting the following exception: &quot;java.io.FileNotFoundException: 
+  Specified data file name does not exist: &lt;filename&gt;&quot; </p>
+<p class="topictext"><u>Solution:</u><br>
+  The server application cannot find the data file (which is given as the &lt;filename&gt; 
+  in the error message). Use the server dialog application to configure the correct 
+  location of the server data file.</p>
+<p class="topictext"><u>Problem:</u><br>
+  Once the client is connected to the data source, no data records are displayed 
+  even though there are several data records in the server data file.</p>
+<p class="topictext"><u>Solution:</u><br>
+  The data schema is not configured correctly in the client application. Make 
+  sure that the configured client schema and the schema of the data file are consistent.</p>
+<p class="topictext"><u>Problem:</u><br>
+  After data records are added with the client application, a refresh causes them 
+  to disappear (or some other similar odd behaviour).</p>
+<p class="topictext"><u>Solution:</u><br>
+  The data schema is not configured correctly in the client application. Make 
+  sure that the configured client schema and the schema of the data file are consistent. 
+  An example of a correctly configured data schema for the data server is provided 
+  <a href="configuring.html#schema">here</a>. The default configuration settings 
+  provide this same setting.</p>
+<p class="topictext"><u>Problem:</u><br>
+  The client application is reporting that the currently selected data record 
+  has been deleted. Why are deleted records being displayed ?</p>
+<p class="topictext"><u>Solution:</u><br>
+  Another user who is also connected to the same server has deleted the data record 
+  and the client application needs to be refreshed to reflect the changes.</p>
+<p class="topictext"><u>Problem:</u><br>
+  The client application cannot connect successfully to the remote data server.</p>
+<p class="topictext"><u>Solution:</u><br>
+  Make sure that both the client and server able to &quot;see&quot; each other 
+  over the network (no Network Address Translation) and that there is no firewall 
+  blocking port 1099 or any other ports used by Remote Method Invocation (RMI).</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+</body>
+</html>

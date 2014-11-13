@@ -1,0 +1,135 @@
+Build 0016
+----------
+First public build
+
+Build 0017
+----------
+Attempting to fix the build process - still not fixed (see Build 0018).
+
+Build 0018
+----------
+The build process was messing up binary files with Apache Ant's <copy filtering="true">. A bug was opened
+however, this fact is well documented in the Ant Manual (I overlooked this).
+http://nagoya.apache.org/bugzilla/show_bug.cgi?id=23341
+The build process was fixed in this build.
+
+Build 0019
+----------
+Completed the Manifest file entries.
+Added 4.11 to choices.txt regarding the use of MVC in the client application.
+
+Build 0020
+----------
+Put the build number in suncertify.db.test source files javadoc.
+
+Build 0021
+----------
+Prevented the data record JTable from allowing columns to be reordered.
+
+Build 0022
+----------
+Some very minor code/javadoc changes.
+
+Build 0023
+----------
+More minor code changes.
+Documented the fact that SwingWorker.java would be included with the submission (See choices.txt 2.1)
+http://java.sun.com/products/jfc/tsc/articles/threads/update.html
+
+Build 0024
+----------
+Added 3.1 RMI over Object Serialization to choices.txt.
+
+Build 0025
+----------
+Moved 3.1 RMI or Object Serialization to 4.2 where it belongs.
+
+Build 0026
+----------
+Removed the Assumption 2.6 Assume all RMI calls execute in a separate thread.
+Reenforced Limtation 3.2 Server configuration requires a recompile.
+
+Build 0027
+----------
+Removed any dependency on SwingWorker after receiving notification from Sun that
+the inclusion of this source file will result in automatic failure.
+Changed choices.txt (2.4) to reflect the change.
+Changed suncertify.db.server.RemoteData from Singleton (and updated chocies.txt accordingly)
+Small changes to choices.txt after review by John Robinson.
+
+Build 0028
+----------
+Small changes to choices.txt.
+Allowed the server to be configured through the client application.
+Removed 3.2 from choices.txt.
+
+Build 0029
+----------
+Added 2.9 Server configuration to choices.txt.
+Changed the layout of the configuration dialog.
+
+Build 0030
+----------
+User Guide reviewed, proof-read and finalised.
+
+Build 0031
+----------
+choices.txt reviewed, proof-read and finalised.
+
+Build 0032
+----------
+Minor code changes.
+Flagged as release candidate pending build verification.
+
+Build 0033 (RC 1)
+----------
+Removed 4.11 Use of MVC.
+
+Build 0034 (RC 2)
+----------
+Removed configuration of the server from the client into a server GUI application.
+Updated the user guide accordingly.
+Removed 2.9 Server Configuration from choices.txt.
+
+Build 0035
+----------
+Removed stop16.gif
+Add mnemonic/tooltip to server GUI Browse button
+Added 2.9 Clarity and Maintainability
+Changed window titles
+Fixed small bug in ServerFrame (if FileNotFoundException, the server was still being started)
+
+Build 0036
+----------
+Changes to the User Guide after review by Kathryn Winston.
+
+Build 0037 (RC 3)
+----------
+Minor code changes after client interface review by Peter Tuton.
+
+Build 0038
+----------
+Removed the ability for the client application to set look and feel, now defaults to system.
+Fixed a very nasty bug presented when the schema is set incorrectly (java.lang.ArrayIndexOutOfBoundsException).
+
+Build 0039
+----------
+Added 2.11 Client interface functionality to choices.txt.
+
+Build 0040
+----------
+Code changes made after review by Nick Hamilton.
+Added 3.5 Exception messages
+
+Build 0041
+----------
+Changes to choices.txt after review by David Moore.
+Minor source code changes.
+
+Build 0042
+----------
+Minor changes to the User Guide, grammatical, spelling, etc.
+
+Build 0043
+----------
+Changed the "Create Data Record" dialog title.

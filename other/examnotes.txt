@@ -1,0 +1,9 @@
+Potential questions
+-------------------
+- Did you chose RMI or Sockets, what are their advantages or disadvantages?
+- How does a user pick their search criteria in your submission?
+- Explain why your application will perform well?
+
+Other
+-----
+- read choices.txt before the exam

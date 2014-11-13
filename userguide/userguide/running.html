@@ -1,0 +1,135 @@
+<html>
+<head>
+<title>Sun Certified Developer for the Java 2 Platform written by Tony Morris 2003</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="userguide.css" type="text/css">
+</head>
+
+<body bgcolor="#FFFFFF" text="#000000">
+<p class="topictitle">Running the Client Application</p>
+<p class="topictext">While the client application is running, certain actions 
+  may be performed using the client interface. The interface contains a tool bar, 
+  a set of menu options and a pop-up menu (on a data record only) from which these 
+  actions can be invoked. Each action has a short cut &quot;accelerator&quot; 
+  key(s) associated with it to alllow operation of the application with the keyboard. 
+  Each action may or may not be enabled depending upon the state of the client 
+  application. Action icons are usually &quot;grayed-out&quot; when the action 
+  is disabled - this is Look and Feel dependent.</p>
+<p class="topicsubtitle"><a name="about"></a>About Dialog <img src="images/actions/about16.gif" width="16" height="16"> 
+  <span class="topictext">(F1)</span></p>
+<p class="topictext">This action brings up a dialog that displays a brief description 
+  about the application, click anywhere on the dialog, the main application window 
+  or the 'X' close button to close the About dialog. This action is always enabled.</p>
+<p class="topicsubtitle"><a name="configuration"></a>Configuration Dialog <img src="images/actions/preferences16.gif" width="16" height="16"> 
+  <span class="topictext">(F9)</span></p>
+<p class="topictext">This action brings up a dialog that allows the user to configure 
+  the application. Although this action is always enabled, certain configuration 
+  attributes on the dialog will be &quot;read-only&quot; when the client application 
+  is connected to a data source. The user will not be able to use the main application 
+  window while this dialog is being displayed. Click 'OK' to apply the configuration 
+  changes or 'Cancel' to cancel any changes - this will close the Configuration 
+  Dialog. More information on configuration can be found in the <a href="configuring.html">Configuration 
+  section</a>.</p>
+<p class="topicsubtitle"><a name="connect"></a>Connect/Disconnect <img src="images/actions/connect16.gif" width="16" height="16">/<img src="images/actions/disconnect16.gif" width="16" height="16"> 
+  <span class="topictext">(Control-ENTER)</span></p>
+<p class="topictext">The connect/disconnect action will connect to the data source 
+  if the application is currently disconnected, or disconnect from the data source 
+  if the application is currently connected. The data source may be the local 
+  data file if the application is in local mode or it will be the remote Data 
+  object if the application is in networked mode. This action will always be enabled. 
+  See the <a href="starting.html">Starting the Application section</a> for more 
+  information on the client application modes.</p>
+<p class="topicsubtitle"><a name="copy"></a>Copy Data Record <img src="images/actions/copy16.gif" width="16" height="16"><span class="topictext">(Shift-C)</span></p>
+<p class="topictext">This action will copy the currently selected data record 
+  to the system clipboard. This action is only enabled when there is a data record 
+  selected and the application is connected to a data source, otherwise, it is 
+  disabled. The system clipboard contents can be used outside of the client application.</p>
+<p class="topicsubtitle"><a name="create"></a>Create Data Record <img src="images/actions/plus16.gif" width="16" height="16"> 
+  <span class="topictext">(Control-R)</span> </p>
+<p class="topictext">This action will bring up a dialog to allow the entry of 
+  a new data record. This action is only enabled when the application is connected 
+  to a data source, otherwise, it is disabled. Press 'OK' to commit the new data 
+  record to the data source, press the 'Cancel' button to cancel the creation 
+  of a new data record.</p>
+<p class="topicsubtitle"><a name="cut"></a>Cut Data Record <img src="images/actions/cut16.gif" width="16" height="16"><span class="topictext">(Shift-X)</span></p>
+<p class="topictext">This action will remove the currently selected data record 
+  and copy its contents to the system clipboard. If the application is configured 
+  to confirm 'Cut data record' operations, a confirmation dialog will appear which 
+  will allow the user to cancel the operation if desired. This action is only 
+  enabled when there is a data record selected and the application is connected 
+  to a data source, otherwise, it is disabled. The system clipboard contents can 
+  be used outside of the client application.</p>
+<p class="topicsubtitle"><a name="delete"></a>Delete Data Record <img src="images/actions/minus16.gif" width="16" height="16"> 
+  <span class="topictext">(Delete)</span></p>
+<p class="topictext">This action will deleted the currently selected data record 
+  from the data source. If the application is configured to confirm 'Delete data 
+  record' operations, a confirmation dialog will appear which will allow the user 
+  to cancel the operation if desired. This action is only enabled when there is 
+  a data record selected and the application is connected to a data source, otherwise, 
+  it is disabled.</p>
+<p class="topicsubtitle"><a name="edit"></a>Edit Data Record <img src="images/actions/edit16.gif" width="16" height="16"><span class="topictext">(Space)</span></p>
+<p class="topictext">This action will bring up a dialog to allow the editing of 
+  the currently selected data record. This action is only enabled when there is 
+  a data record selected and the application is connected to a data source, otherwise, 
+  it is disabled. Press 'OK' to commit the edited data record to the data source, 
+  press the 'Cancel' button to cancel the editing of the selected data record. 
+  This will close the dialog.</p>
+<p class="topicsubtitle"><a name="exit"></a>Exit the Application <img src="images/actions/exit16.gif" width="16" height="16"> 
+  <span class="topictext">(Control-Q)</span> </p>
+<p class="topictext">This action will disconnect from the data source (if it is 
+  connected) before exiting the application. If the application is configured 
+  to confirm 'Exit application' operations, a confirmation dialog will appear 
+  which will allow the user to cancel the operation if desired. This action is 
+  always enabled.</p>
+<p class="topicsubtitle"><a name="paste"></a>Paste Data Record <img src="images/actions/paste16.gif" width="16" height="16"><span class="topictext">(Shift-V)</span></p>
+<p class="topictext">This action will bring up a dialog that contains data from 
+  the system clipboard to allow the user to create a new data record from the 
+  clipboard contents. If the system clipboard does not contain valid record data, 
+  an error will be reported by the application. This action is only enabled when 
+  the application is connected to a data source, otherwise, it is disabled. Press 
+  'OK' to commit the pasted data record to the data source, press the 'Cancel' 
+  button to cancel the creation of the pasted data record.</p>
+<p class="topicsubtitle"><a name="refreshall"></a>Refresh All Data Records Display 
+  <img src="images/actions/refreshall16.gif" width="16" height="16"> <span class="topictext">(F5)</span></p>
+<p class="topictext">This action will refresh the display of data records to show 
+  all data records from the data source. This action is only enabled when the 
+  application is connected to a data source, otherwise, it is disabled.</p>
+<p class="topicsubtitle"><a name="refresh"></a>Refresh Current Display <img src="images/actions/refresh16.gif" width="16" height="16"><span class="topictext">(F7)</span></p>
+<p class="topictext">This action will refresh with an updated display of data 
+  records. If the data record display contains a subset of the total data records 
+  in the data source (from a <a href="#search">Search</a>), then only the subset 
+  will be updated in the display, otherwise, all records will be updated. This 
+  action is only enabled when the application is connected to a data source, otherwise, 
+  it is disabled.</p>
+<p class="topicsubtitle"><a name="search"></a>Search Data Records <img src="images/actions/search16.gif" width="16" height="16"> 
+  <span class="topictext">(Control-F)</span></p>
+<p class="topictext">This action will bring up a dialog to allow the user to enter 
+  search criteria for data records. Data records are matched if they start with 
+  the given String criteria unless the user specifies to match fields exactly 
+  with the check box. The search criteria is case-sensitive. Once the search has 
+  been performed, only the data records from the data source that match the given 
+  criteria will be displayed. This action is only enabled when the application 
+  is connected to a data source, otherwise, it is disabled.</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+</body>
+</html>

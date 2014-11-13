@@ -1,0 +1,95 @@
+<html>
+<head>
+<title>Sun Certified Developer for the Java 2 Platform written by Tony Morris 2003</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="userguide.css" type="text/css">
+</head>
+
+<body bgcolor="#FFFFFF" text="#000000">
+<p class="topictitle">Configuring the Application</p>
+<p class="topictext">Configuring the client application can be achieved from the main
+  application window by invoking the <a href="running.html#configuration">Configuration 
+  Dialog </a> action. The application reads a file called &quot;suncertify.properties&quot; 
+  from the current working directory at start-up time. This file contains various 
+  configuration information that is related to the operation of both the client 
+  and server application. If this configuration file does exist, a set of default 
+  configuration properties is used. The application will save the configured properties 
+  when it closes. The default configuration values have a schema defined that 
+  is consistent with version 1.0 of the data server. The client application will 
+  not connect to a data source if no schema has been defined, if the client application 
+  is in local mode and the data source location has not been specified or if the 
+  client application is in networked mode and the JNDI name of the remote object 
+  has not been specified. The definition of a data source is dependant on the 
+  client application start-up mode. This section explains the meaning of the attributes 
+  that are presented in the configuration dialog.</p>
+<p class="topictext">Certain attributes of the configuration dialog are &quot;read-only&quot; 
+  while the application is connected to a data source. In order to modify these 
+  attributes, <a href="running.html#connect">disconnect</a> from the data source.</p>
+<p class="topictext">Once the changes have been committed by pressing the 'OK' 
+  button, the new suncertify.properties configuration file will be written. To 
+  cancel the configuration and prevent writing the configuration changes to file, 
+  press the 'Cancel' button.</p>
+<p class="topicsubtitle"><a name="schema"></a>Data Schema</p>
+<p class="topictext">This panel allows the user to configure the data schema on 
+  the client to be consistent with the data schema on the server. The data schemas 
+  on the client and the server must be consistent, otherwise, behaviour of the 
+  client application is indeterminate. The default configuration provides a schema 
+  definition that is consistent with version 1.0 of the data server. The panel 
+  allows the user to add new fields to the schema <img src="images/actions/plus16.gif" width="16" height="16">, 
+  delete existing fields from the schema <img src="images/actions/minus16.gif" width="16" height="16">, 
+  change the order of the fields in the schema <img src="images/moveup16.gif" width="16" height="16"> 
+  / <img src="images/movedown16.gif" width="16" height="16">, and edit the attributes 
+  of each field in the schema. Each field may or may not represent a unique key, 
+  has a descriptive display name, and a length in bytes. A panel containing a 
+  data schema setting that is consistent with version 1.0 of the server is:</p>
+<p class="topictext"><img src="images/schemasetting.jpg" width="357" height="205"><br>
+</p>
+<p class="topicsubtitle"><a name="networked"></a>Networked Mode</p>
+<p class="topictext">When the client application is <a href="starting.html">started 
+  in networked mode</a>, the user must configure the JNDI name of the remote DB 
+  object. The client application will not connect to the data source until this 
+  has been specified. The default configuration settings use the value &quot;Data&quot;. 
+  The user may also optionally specify the host and/or port of the RMI registry 
+  to locate the remote DB object on. The host defaults to &quot;localhost&quot; 
+  and the port defaults to &quot;1099&quot;. </p>
+<p class="topicsubtitle"><a name="datafile"></a>Data File</p>
+<p class="topictext">The user must configure the location of the database file 
+  which is used by the client application when in local mode. The client application 
+  (in local mode) will not connect to the data source until this has been specified. 
+  This file must exist and must contain valid header data.</p>
+<p class="topicsubtitle"><a name="confirm"></a>Confirm Actions </p>
+<p class="topictext">The confirm action checkboxes allow the user to configure 
+  whether or not certain actions will have a confirmation dialog displayed before 
+  performing the action. If the checkbox is checked for an action, the application 
+  will confirm with the user before performing that action.</p>
+<p class="topicsubtitle"><a name="server"></a>Server Configuration</p>
+<p class="topictext">Server configuration is provided by a dialog that is displayed 
+  when the application is <a href="starting.html">started in server mode</a>. 
+  The dialog allows the user to enter the location of the back-end data source 
+  file name, the local TCP port to bind the server to, and the JNDI name to bind 
+  the remote data object to. When the user starts the server, the application 
+  will become non-responsive and will only respond simple commands, such as exiting 
+  the application. There is no ability to stop the server after it has been started, 
+  except for exiting the application entirely.</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+</body>
+</html>

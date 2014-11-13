@@ -1,0 +1,6 @@
+Manifest-Version: 1.0
+Main-Class: suncertify.db.Main
+Implementation-Title: Sun Certified Developer for the Java 2 Platform
+Implementation-URL: http://suned.sun.com/AU/certification/java/java_devj2se.html
+Implementation-Version: 1.0
+Implementation-Vendor: Tony Morris

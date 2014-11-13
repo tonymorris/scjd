@@ -1,0 +1,257 @@
+<!--
+Build Script
+Requires Jakarta Ant 1.5.1 or higher http://jakarta.apache.org/ant
+
+JUnit 3.8.1
+http://www.junit.org
+-->
+
+<project name="Sun Certified Developer for the Java 2 Platform" default="dist" basedir=".">
+
+    <property file="build.properties" description="Properties Required for Building and Testing"/>
+    <property file="release.properties" description="Properties Required for Creating a Release"/>
+    <property file="run.properties" description="Properties Required for Running the application"/>
+    <property file="ftp.properties" description="Properties Required for Sending Files via FTP"/>
+
+    <!-- The CLASSPATH that is used throughout the project -->
+	<path id="project.class.path" description="The CLASSPATH that is used throughout the project">
+        <pathelement path="${lib.dir}"/>
+        <pathelement path="${lib.dir}/${lib.junit}"/>
+        <pathelement path="${build.dir}"/>
+        <pathelement path="${testbuild.dir}"/>
+		<pathelement path="${java.class.path}"/>
+	</path>
+
+	<!-- Create the appropriate directories for the build -->
+	<target name="init" description="Create the appropriate directories for the build">
+        <mkdir dir="${build.dir}"/>
+        <mkdir dir="${debugbuild.dir}"/>
+		<mkdir dir="${dist.dir}"/>
+		<mkdir dir="${javadoc.dir}"/>
+        <mkdir dir="${report.dir}"/>
+        <mkdir dir="${testbuild.dir}"/>
+        <mkdir dir="${releasebuild.dir}"/>
+        <mkdir dir="${release.dir}"/>
+	</target>
+
+	<!-- Remove any directories or files used during the build -->
+	<target name="clean" description="Remove any directories or files used during the build">
+		<delete dir="${dist.dir}"/>
+		<delete dir="${javadoc.dir}"/>
+        <delete dir="${build.dir}"/>
+        <delete dir="${debugbuild.dir}"/>
+        <delete dir="${report.dir}"/>
+        <delete dir="${testbuild.dir}"/>
+        <delete dir="${releasebuild.dir}"/>
+        <delete dir="${release.dir}"/>
+        <delete file="${archivesrc.file}"/>
+	</target>
+
+	<!-- Compile the project -->
+	<target name="compile" depends="init" description="Compile the project">
+		<javac debug="on" deprecation="on" srcdir="${src.dir}" destdir="${build.dir}" failonerror="true">
+			<classpath refid="project.class.path"/>
+		</javac>
+	</target>
+
+    <!-- RMI compile the project -->
+    <target name="rmic" depends="init,compile" description="RMI compile the project">
+        <rmic base="${build.dir}" debug="on">
+            <include name="${rmi.data.class}"/>
+        </rmic>
+    </target>
+
+	<!-- Javadoc the project -->
+	<target name="javadoc" depends="init" description="Javadoc the project">
+        <javadoc packagenames="*" destdir="${javadoc.dir}" stylesheetfile="${style.file}" overview="${overview.file}" failonerror="true">
+            <classpath refid="project.class.path"/>
+            <sourcepath path="${src.dir}"/>
+            <sourcepath path="${testsrc.dir}"/>
+        </javadoc>
+	</target>
+
+    <!-- Run automated unit tests on the build using JUnit [ http://www.junit.org/ ] -->
+	<target name="compiletest" depends="init,compile" description="Execute Unit Tests and Produce a Report">
+        <javac srcdir="${testsrc.dir}" destdir="${testbuild.dir}" debug="true" failonerror="true">
+            <classpath refid="project.class.path"/>
+        </javac>
+    </target>
+
+    <!-- Run automated unit tests on the build using JUnit [ http://www.junit.org/ ] -->
+	<target name="test" depends="init,compile,compiletest" description="Execute Unit Tests and Produce a Report">
+
+		<junit fork="yes" haltonfailure="yes">
+			<classpath refid="project.class.path"/>
+
+			<formatter type="plain"/>
+
+			<batchtest todir="${report.dir}">
+				<fileset dir="${testbuild.dir}">
+                    <!-- exclude inner classes -->
+                    <exclude name="**/*$*"/>
+				</fileset>
+			</batchtest>
+		</junit>
+	</target>
+
+	<!-- Create the distribution jar file (without the unit test cases) -->
+	<target name="dist" depends="init,compile,rmic" description="Create the distribution jar file">
+		<jar destfile="${dist.dir}/${jar.file}" manifest="${manifest.file}">
+            <fileset dir="${build.dir}">
+                <include name="**/**"/>
+            </fileset>
+            <fileset dir="${basedir}">
+                <include name="${res.dir}/**"/>
+            </fileset>
+        </jar>
+	</target>
+
+    <!-- Run the RMI client in networked mode -->
+    <target name="client" depends="init,compile,rmic,dist" description="Run the RMI client">
+        <java jar="${dist.dir}/${jar.file}" fork="true">
+            <classpath refid="project.class.path"/>
+        </java>
+    </target>
+
+    <!-- Run the RMI client in local mode -->
+    <target name="lclient" depends="init,compile,rmic,dist" description="Run the RMI client">
+        <java jar="${dist.dir}/${jar.file}" fork="true">
+            <classpath refid="project.class.path"/>
+            <arg value="alone"/>
+        </java>
+    </target>
+
+    <!-- Run the RMI server -->
+    <target name="server" depends="init,compile,rmic,dist" description="Run the RMI server">
+        <java jar="${dist.dir}/${jar.file}" fork="true">
+            <arg value="${server.arg}"/>
+        </java>
+    </target>
+
+    <!-- Populate the release build directory -->
+    <target name="releasebuild" depends="init,dist,javadoc" description="Populate the release build directory">
+
+        <buildnumber/>
+
+        <propertyfile file="build.number">
+            <entry key="formatted.build.number" type="int" value="${build.number}" pattern="0000"/>
+        </propertyfile>
+
+        <property file="build.number"/>
+
+        <filter token="build.number" value="${formatted.build.number}"/>
+
+        <!-- Copy the executable jar file to the release directory -->
+        <copy todir="${releasebuild.dir}">
+            <fileset dir="${dist.dir}">
+                <include name="**/**"/>
+            </fileset>
+        </copy>
+
+        <!-- Copy the database file to the release directory -->
+        <copy todir="${releasebuild.dir}">
+            <fileset dir="${db.dir}">
+                <include name="**/**"/>
+            </fileset>
+        </copy>
+
+        <mkdir dir="${releasebuild.dir}/${releasecode.dir}"/>
+
+        <!-- Copy the source code to the release (code) directory -->
+        <copy todir="${releasebuild.dir}/${releasecode.dir}" filtering="true">
+            <fileset dir="${src.dir}">
+                <include name="**/**"/>
+            </fileset>
+            <fileset dir="${testsrc.dir}">
+                <include name="**/**"/>
+            </fileset>
+        </copy>
+
+        <!-- Copy the version information to the release directory -->
+        <copy todir="${releasebuild.dir}" filtering="true">
+            <fileset dir="${version.dir}">
+                <include name="**/**"/>
+            </fileset>
+        </copy>
+
+        <mkdir dir="${releasebuild.dir}/${releasedocs.dir}"/>
+
+        <!-- Copy the instructions to the release (docs) directory -->
+        <copy todir="${releasebuild.dir}/${releasedocs.dir}">
+            <fileset dir="${instructions.dir}">
+                <include name="**/**"/>
+            </fileset>
+        </copy>
+
+        <mkdir dir="${releasebuild.dir}/${releasedocs.dir}/${releasejavadoc.dir}"/>
+
+        <!-- Copy the design choices to the release (docs) directory -->
+        <copy todir="${releasebuild.dir}/${releasedocs.dir}" filtering="true">
+            <fileset dir="${choices.dir}">
+                <include name="**/**"/>
+            </fileset>
+        </copy>
+
+        <!-- Copy the javadoc to the release (docs/javadoc) directory -->
+        <copy todir="${releasebuild.dir}/${releasedocs.dir}/${releasejavadoc.dir}" filtering="true">
+            <fileset dir="${javadoc.dir}">
+                <include name="**/**"/>
+                <exclude name="**/*.gif"/>
+            </fileset>
+        </copy>
+
+        <!-- Copy the javadoc binary files without filtering to the release (docs/javadoc) directory -->
+        <copy todir="${releasebuild.dir}/${releasedocs.dir}/${releasejavadoc.dir}">
+            <fileset dir="${javadoc.dir}">
+                <include name="**/*.gif"/>
+            </fileset>
+        </copy>
+
+        <!-- Copy the User Guide to the release (docs) directory -->
+        <copy todir="${releasebuild.dir}/${releasedocs.dir}" filtering="true">
+            <fileset dir="${userguide.dir}">
+                <include name="**/**"/>
+                <exclude name="**/*.gif"/>
+                <exclude name="**/*.jpg"/>
+            </fileset>
+        </copy>
+
+        <!-- Copy the User Guide binary files without filtering to the release (docs) directory -->
+        <copy todir="${releasebuild.dir}/${releasedocs.dir}">
+            <fileset dir="${userguide.dir}">
+                <include name="**/*.gif"/>
+                <include name="**/*.jpg"/>
+            </fileset>
+        </copy>
+
+    </target>
+
+    <!-- Create the release file -->
+    <target name="release" depends="init,releasebuild" description="Create the release file">
+
+        <zip destfile="${release.dir}/${release.file}-b${formatted.build.number}.jar">
+            <fileset dir="${releasebuild.dir}">
+                <include name="**/**"/>
+            </fileset>
+        </zip>
+    </target>
+
+    <!-- FTP the project source code to a public server -->
+	<target name="archivesrc" depends="clean" description="Create a zip archive of the contents of this directory">
+		<zip destfile="${archivesrc.file}" basedir="${basedir}">
+            <exclude name="${archivesrc.file}"/>
+        </zip>
+	</target>
+
+    <!-- FTP the project source code to a public server -->
+	<target name="ftpsrc" depends="archivesrc" if="ftp.pass" description="FTP the code zip archive to a public server">
+		<ftp server="${ftp.server}" userid="${ftp.user}" password="${ftp.pass}" remotedir="${ftp.remote.dir}">
+			<fileset dir="${basedir}">
+				<include name="${archivesrc.file}"/>
+			</fileset>
+		</ftp>
+
+		<delete file="${archivesrc.file}"/>
+	</target>
+
+</project>
